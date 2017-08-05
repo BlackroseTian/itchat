@@ -1,0 +1,81 @@
+一 首先实现网页登录控制微信
+需要安装的Python包文件:pip install itchat
+itchat的官方文档地址:https://pypi.python.org/pypi/itchat/1.0.11
+Python程序登录控制程序如下:
+"""
+# 加载包
+import itchat
+# 登陆
+itchat.auto_login()
+# 发送文本消息，发送目标是“文件传输助手”
+itchat.send('Hello, filehelper', toUserName='filehelper')
+"""
+二 实现微信自动回复文本功能
+"""
+import itchat
+@itchat.msg_register(itchat.content.TEXT)
+def text_reply(msg):
+  return u"您好,我是Blackrosetian的聊天机器人Rainbow,我现在有事正在忙,一会马上回复您!您的信息:"+msg['Text']+'\n'+u"我会马上传达给我的主人!"
+itchat.auto_login()
+itchat.run()
+"""
+#上面代码只是实现了微信好友的自动回复,还不能实现微信群聊的自动回复功能,要想实现群聊的自动回复功能需要添加如下:
+import itchat
+@itchat.msg_register(itchat.content.TEXT, isGroupChat=True)
+def text_reply(msg):
+  return u"您好,我是宋田的聊天机器人Rainbow,我现在有事正在忙,一会马上回复您!您的信息:"+msg['Text']+'\n'+u"我会马上传达给我的主人宋田!"
+itchat.auto_login()
+itchat.run()
+#这里添加isGroupChat=True,因为此选项默认为Faulse
+
+三 实现其他信息的自动回复
+"""
+import itchat
+from itchat.content import *
+
+@itchat.msg_register([TEXT, MAP, CARD, NOTE, SHARING])
+def text_reply(msg):
+    # 微信里，每个用户和群聊，都使用很长的ID来区分
+    # msg['FromUserName']就是发送者的ID
+    # 将消息的类型和文本内容返回给发送者
+    itchat.send('%s: %s' % (msg['Type'], msg['Text']), msg['FromUserName'])
+
+@itchat.msg_register([PICTURE, RECORDING, ATTACHMENT, VIDEO])
+def download_files(msg):
+    # msg['Text']是一个文件下载函数
+    # 传入文件名，将文件下载下来
+    msg['Text'](msg['FileName'])
+    # 把下载好的文件再发回给发送者
+    return '@%s@%s' % ({'Picture': 'img', 'Video': 'vid'}.get(msg['Type'], 'fil'), msg['FileName'])
+
+# 处理好友添加请求
+@itchat.msg_register(FRIENDS)
+def add_friend(msg):
+    # 该操作会自动将新好友的消息录入，不需要重载通讯录
+    itchat.add_friend(**msg['Text']) 
+    # 加完好友后，给好友打个招呼
+    itchat.send_msg('Nice to meet you!', msg['RecommendInfo']['UserName'])
+
+# 处理群聊消息
+@itchat.msg_register(TEXT, isGroupChat=True)
+def text_reply(msg):
+    if msg['isAt']:
+        itchat.send(u'@%s\u2005I received: %s' % (msg['ActualNickName'], msg['Content']), msg['FromUserName'])
+
+# 在auto_login()里面提供一个True，即hotReload=True
+# 即可保留登陆状态
+# 即使程序关闭，一定时间内重新开启也可以不用重新扫码
+itchat.auto_login(True)
+itchat.run()
+"""
+
+
+
+
+
+
+
+
+
+
+
