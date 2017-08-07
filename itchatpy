@@ -23,7 +23,7 @@ itchat.run()
 import itchat
 @itchat.msg_register(itchat.content.TEXT, isGroupChat=True)
 def text_reply(msg):
-  return u"您好,我是宋田的聊天机器人Rainbow,我现在有事正在忙,一会马上回复您!您的信息:"+msg['Text']+'\n'+u"我会马上传达给我的主人宋田!"
+  return u"您好,我是Blackrosetian的聊天机器人Rainbow,我现在有事正在忙,一会马上回复您!您的信息:"+msg['Text']+'\n'+u"我会马上传达给我的主人宋田!"
 itchat.auto_login()
 itchat.run()
 #这里添加isGroupChat=True,因为此选项默认为Faulse
